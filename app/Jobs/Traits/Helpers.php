@@ -4,6 +4,7 @@ namespace App\Jobs\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
 
 trait Helpers
@@ -26,6 +27,18 @@ trait Helpers
         return File::makeDirectory("{$this->path}/{$folder}");
     }
 
+    protected function explode($filename)
+    {
+        if (Str::contains($filename, '-')) {
+            return explode('-', $filename);
+        }
+
+        if (Str::contains($filename, '_')) {
+            return explode('_', $filename);
+        }
+
+        throw new \Exception('Wrong file name: ' . $filename);
+    }
     /**
      * @param $filename
      *
@@ -33,11 +46,11 @@ trait Helpers
      */
     protected function generateSubFolderPath($filename)
     {
-        if (strpos($filename, 'IMG') === false) {
+        if (Str::contains($filename, ['IMG', 'VID']) === false) {
             return false;
         }
 
-        $dateFromFilename = explode('_', $filename)[1];
+        $dateFromFilename = $this->explode($filename)[1];
 
         if (strlen($dateFromFilename) !== 8) {
             return false;
