@@ -10,17 +10,15 @@ use Symfony\Component\Finder\SplFileInfo;
 trait Helpers
 {
     /**
-     * @param $folder
-     *
      * @return bool
      */
     protected function createTargetIfNotExists($folder)
     {
-        if (!$folder) {
+        if (! $folder) {
             return false;
         }
 
-        if(File::exists("{$this->path}/{$folder}")) {
+        if (File::exists("{$this->path}/{$folder}")) {
             return true;
         }
 
@@ -37,11 +35,10 @@ trait Helpers
             return explode('_', $filename);
         }
 
-        throw new \Exception('Wrong file name: ' . $filename);
+        throw new \Exception('Wrong file name: '.$filename);
     }
+
     /**
-     * @param $filename
-     *
      * @return bool|string
      */
     protected function generateSubFolderPath($filename)
@@ -77,15 +74,11 @@ trait Helpers
     }
 
     /**
-     * @param \Symfony\Component\Finder\SplFileInfo $file
-     *
-     * @param $target
-     *
      * @return bool
      */
     protected function moveFile(SplFileInfo $file, $target)
     {
-        if (!$target) {
+        if (! $target) {
             return false;
         }
 

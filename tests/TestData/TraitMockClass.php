@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tests\TestData;
 
 use App\Jobs\Traits\Helpers;

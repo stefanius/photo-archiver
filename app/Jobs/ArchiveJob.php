@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\NonExistingPathException;
 use App\Jobs\Traits\Helpers;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\SplFileInfo;
-use App\Exceptions\NonExistingPathException;
 
 class ArchiveJob
 {
@@ -19,7 +19,6 @@ class ArchiveJob
     /**
      * ArchiveJob constructor.
      *
-     * @param $path
      *
      * @throws \App\Exceptions\NonExistingPathException
      */
@@ -27,7 +26,7 @@ class ArchiveJob
     {
         $this->path = $path;
 
-        if (!File::exists($this->path)) {
+        if (! File::exists($this->path)) {
             throw new NonExistingPathException($this->path);
         }
     }
