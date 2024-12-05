@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Tests\TestData\TraitMockClass;
 
@@ -15,14 +16,14 @@ class JobHelpersTest extends TestCase
     /**
      * Setup test.
      */
-    public function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->mock = new TraitMockClass();
+        $this->mock = new TraitMockClass;
     }
 
-    /** @test */
+    #[Test]
     public function it_can_parse_a_valid_filename()
     {
         // Given
@@ -35,7 +36,7 @@ class JobHelpersTest extends TestCase
         $this->assertEquals('2019-07', $result);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_parse_a_filename_without_the_img_prefix()
     {
         // Given
@@ -48,7 +49,7 @@ class JobHelpersTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_parse_a_date_string_less_then_8_characters()
     {
         // Given
@@ -61,7 +62,7 @@ class JobHelpersTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_parse_a_date_string_more_then_8_characters()
     {
         // Given

@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Exceptions\NonExistingPathException;
 use App\Jobs\ArchiveJob;
 use Illuminate\Support\Facades\File;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class IntegrationTest extends TestCase
@@ -17,7 +18,7 @@ class IntegrationTest extends TestCase
     /**
      * Setup test.
      */
-    public function setUp() : void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -28,7 +29,7 @@ class IntegrationTest extends TestCase
         $this->archiver = new ArchiveJob(base_path('tests/archive'));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_split_a_list_of_files_into_separate_folders()
     {
         // Given
@@ -38,12 +39,12 @@ class IntegrationTest extends TestCase
         $archiver->handle();
 
         // Then
-        $expectedFilename = base_path('tests/archive/2018-09') . '/IMG_20180928_082102_1.JPG';
+        $expectedFilename = base_path('tests/archive/2018-09').'/IMG_20180928_082102_1.JPG';
 
         $this->assertFileExists($expectedFilename);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_throw_an_error_when_the_image_folder_does_not_exists()
     {
         $this->expectException(NonExistingPathException::class);
