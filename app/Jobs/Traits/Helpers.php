@@ -35,21 +35,54 @@ trait Helpers
             return explode('_', $filename);
         }
 
-        throw new \Exception('Wrong file name: '.$filename);
+        throw new \Exception('Wrong file name: '. $filename);
+    }
+
+    protected function generateSubFolderPath($filename)
+    {
+        $fromFilename = $this->generateSubFolderPathFromFilename($filename);
+
+        try {
+            if (!$fromFilename) {
+                $fullPath = "{$this->path}/{$filename}";
+                $stream = fopen($fullPath, 'rb');
+
+                $data = exif_read_data($stream);
+
+                if ($data['FileDateTime']) {
+                    $fileDateTime = Carbon::createFromTimestamp($data['FileDateTime']);
+
+                    return sprintf("%d-%'.02d", $fileDateTime->year, $fileDateTime->month);
+                }
+            }
+        } catch (\Exception $e) {
+            !$fromFilename = false;
+        }
+
+
+        if (!$fromFilename) {
+            $fullPath = "{$this->path}/{$filename}";
+            $lastModified = File::lastModified($fullPath);
+            $lastModifiedDate = Carbon::createFromTimestamp($lastModified);
+
+            return sprintf("%d-%'.02d", $lastModifiedDate->year, $lastModifiedDate->month);
+        }
+
+        return $fromFilename;
     }
 
     /**
      * @return bool|string
      */
-    protected function generateSubFolderPath($filename)
+    protected function generateSubFolderPathFromFilename($filename)
     {
-        if (Str::contains($filename, ['IMG', 'VID']) === false) {
+        if (Str::contains($filename, ['IMG', 'VID'], true) === false) {
             return false;
         }
 
         $dateFromFilename = $this->explode($filename)[1];
 
-        if (strlen($dateFromFilename) !== 8) {
+        if (!$this->canParseDateFromString($dateFromFilename)) {
             return false;
         }
 
@@ -86,5 +119,21 @@ trait Helpers
             $file->getPathname(),
             "{$this->path}/{$target}/{$file->getFilename()}"
         );
+    }
+
+    /**
+     * @param string $dateFromFilename
+     *
+     * @return boolean
+     */
+    protected function canParseDateFromString(string $dateFromFilename): bool
+    {
+        // If the length is not exactly 8 characters (yyyymmdd format) return false
+        if (strlen(trim($dateFromFilename)) !== 8) {
+            return false;
+        }
+
+        // Numeric check to exclude non-nummeric matches
+        return is_numeric($dateFromFilename);
     }
 }
