@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Exceptions\NonExistingPathException;
 use App\Jobs\ArchiveJob;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
@@ -11,9 +10,19 @@ use Tests\TestCase;
 class IntegrationTest extends TestCase
 {
     /**
-     * @var \App\Jobs\ArchiveJob
+     * @var string
      */
-    protected $archiver;
+    protected $testFilesSource = 'tests/files';
+
+    /**
+     * @var string
+     */
+    protected $relativePath = 'tests/archive';
+
+    /**
+     * @var string
+     */
+    protected $path;
 
     /**
      * Setup test.
@@ -22,33 +31,34 @@ class IntegrationTest extends TestCase
     {
         parent::setUp();
 
-        // Prepare test location
-        File::copyDirectory(base_path('tests/files'), base_path('tests/archive'));
+        $this->path = base_path($this->relativePath);
 
-        // Instantiate archiver
-        $this->archiver = new ArchiveJob(base_path('tests/archive'));
+        // Prepare test location
+        File::cleanDirectory($this->path);
+        File::copyDirectory(base_path($this->testFilesSource), $this->path);
     }
 
     #[Test]
-    public function it_can_split_a_list_of_files_into_separate_folders()
+    public function it_can_execute_the_archive_job_and_complete_the_archive_process()
     {
-        // Given
-        $archiver = $this->archiver;
+        // Check the initial state
+        $filesBefore = collect(File::files($this->path));
+        $directoriesBefore = collect(File::directories($this->path));
 
-        // When
+        $this->assertEquals(11, $filesBefore->count()); // Check the number of files used for this test
+        $this->assertEquals(0, $directoriesBefore->count()); // Check the number of files used for this test
+
+        // Execute job
+        $archiver = new ArchiveJob($this->path);
         $archiver->handle();
 
-        // Then
+        // Check the files after running the job. All files must be moved.
+        $filesAfter = collect(File::files($this->path));
+        $directoriesAfter = collect(File::directories($this->path));
         $expectedFilename = base_path('tests/archive/2018-09').'/IMG_20180928_082102_1.JPG';
 
         $this->assertFileExists($expectedFilename);
-    }
-
-    #[Test]
-    public function it_can_throw_an_error_when_the_image_folder_does_not_exists()
-    {
-        $this->expectException(NonExistingPathException::class);
-
-        new ArchiveJob('/does/not/exists');
+        $this->assertEquals(0, $filesAfter->count());
+        $this->assertEquals(4, $directoriesAfter->count());
     }
 }

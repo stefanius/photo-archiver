@@ -2,14 +2,15 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\NonExistingPathException;
+use App\Jobs\ArchiveJob;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Tests\TestData\TraitMockClass;
 
 class JobHelpersTest extends TestCase
 {
     /**
-     * @var \Tests\TestData\TraitMockClass
+     * @var \App\Jobs\ArchiveJob
      */
     protected $mock;
 
@@ -20,7 +21,7 @@ class JobHelpersTest extends TestCase
     {
         parent::setUp();
 
-        $this->mock = new TraitMockClass;
+        $this->mock = new ArchiveJob(base_path('tests/archive'));
     }
 
     #[Test]
@@ -30,7 +31,7 @@ class JobHelpersTest extends TestCase
         $filename = 'IMG_20190708_074526533.jpg';
 
         // When
-        $result = $this->mock->callGenerateSubFolderPath($filename);
+        $result = $this->mock->generateSubFolderPath($filename);
 
         // Then
         $this->assertEquals('2019-07', $result);
@@ -43,7 +44,7 @@ class JobHelpersTest extends TestCase
         $filename = '20190708_074526533.jpg';
 
         // When
-        $result = $this->mock->callGenerateSubFolderPath($filename);
+        $result = $this->mock->generateSubFolderPathFromFilename($filename);
 
         // Then
         $this->assertFalse($result);
@@ -56,7 +57,7 @@ class JobHelpersTest extends TestCase
         $filename = 'IMG_2019070_074526533.jpg';
 
         // When
-        $result = $this->mock->callGenerateSubFolderPath($filename);
+        $result = $this->mock->generateSubFolderPathFromFilename($filename);
 
         // Then
         $this->assertFalse($result);
@@ -69,9 +70,17 @@ class JobHelpersTest extends TestCase
         $filename = 'IMG_201907011_074526533.jpg';
 
         // When
-        $result = $this->mock->callGenerateSubFolderPath($filename);
+        $result = $this->mock->generateSubFolderPathFromFilename($filename);
 
         // Then
         $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function it_can_throw_an_error_when_the_image_folder_does_not_exists()
+    {
+        $this->expectException(NonExistingPathException::class);
+
+        new ArchiveJob('/does/not/exists');
     }
 }
