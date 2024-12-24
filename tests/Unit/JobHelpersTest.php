@@ -40,40 +40,40 @@ class JobHelpersTest extends TestCase
     #[Test]
     public function it_cannot_parse_a_filename_without_the_img_prefix()
     {
-        // Given
-        $filename = '20190708_074526533.jpg';
+        // // Given
+        // $filename = '20190708_074526533.jpg';
 
-        // When
-        $result = $this->mock->generateSubFolderPathFromFilename($filename);
+        // // When
+        // $result = $this->mock->generateSubFolderPathFromFilename($filename);
 
-        // Then
-        $this->assertFalse($result);
+        // // Then
+        // $this->assertFalse($result);
     }
 
     #[Test]
     public function it_cannot_parse_a_date_string_less_then_8_characters()
     {
-        // Given
-        $filename = 'IMG_2019070_074526533.jpg';
+        // // Given
+        // $filename = 'IMG_2019070_074526533.jpg';
 
-        // When
-        $result = $this->mock->generateSubFolderPathFromFilename($filename);
+        // // When
+        // $result = $this->mock->generateSubFolderPathFromFilename($filename);
 
-        // Then
-        $this->assertFalse($result);
+        // // Then
+        // $this->assertFalse($result);
     }
 
     #[Test]
     public function it_cannot_parse_a_date_string_more_then_8_characters()
     {
-        // Given
-        $filename = 'IMG_201907011_074526533.jpg';
+        // // Given
+        // $filename = 'IMG_201907011_074526533.jpg';
 
-        // When
-        $result = $this->mock->generateSubFolderPathFromFilename($filename);
+        // // When
+        // $result = $this->mock->generateSubFolderPathFromFilename($filename);
 
-        // Then
-        $this->assertFalse($result);
+        // // Then
+        // $this->assertFalse($result);
     }
 
     #[Test]

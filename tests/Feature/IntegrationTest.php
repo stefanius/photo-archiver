@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Jobs\ArchiveJob;
+use App\Strategies\PerMonthStrategy;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -49,7 +50,7 @@ class IntegrationTest extends TestCase
         $this->assertEquals(0, $directoriesBefore->count()); // Check the number of files used for this test
 
         // Execute job
-        $archiver = new ArchiveJob($this->path);
+        $archiver = new ArchiveJob($this->path, new PerMonthStrategy);
         $archiver->handle();
 
         // Check the files after running the job. All files must be moved.

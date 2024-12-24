@@ -2,10 +2,12 @@
 
 namespace App\Jobs;
 
+use App\Actions\GetDateFromExifData;
+use App\Actions\GetDateFromFilename;
+use App\Actions\GetDateFromLastModifiedDate;
 use App\Exceptions\NonExistingPathException;
-use Carbon\Carbon;
+use App\Strategies\Strategy;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Symfony\Component\Finder\SplFileInfo;
 
 class ArchiveJob
@@ -16,13 +18,18 @@ class ArchiveJob
     protected $path;
 
     /**
-     * ArchiveJob constructor.
-     *
-     * @throws \App\Exceptions\NonExistingPathException
+     * @var \App\Strategies\Strategy
      */
-    public function __construct($path)
+    protected $strategy;
+
+    /**
+     * Undocumented function
+     */
+    public function __construct(string $path, Strategy $strategy)
     {
         $this->path = $path;
+
+        $this->strategy = $strategy;
 
         if (! File::exists($this->path)) {
             throw new NonExistingPathException($this->path);
@@ -55,77 +62,27 @@ class ArchiveJob
             return true;
         }
 
-        return File::makeDirectory("{$this->path}/{$folder}");
-    }
-
-    public function explode($filename)
-    {
-        if (Str::contains($filename, '-')) {
-            return explode('-', $filename);
-        }
-
-        if (Str::contains($filename, '_')) {
-            return explode('_', $filename);
-        }
-
-        throw new \Exception('Wrong file name: '.$filename);
-    }
-
-    public function generateSubFolderPath($filename)
-    {
-        $fromFilename = $this->generateSubFolderPathFromFilename($filename);
-
-        try {
-            if (! $fromFilename) {
-                $fullPath = "{$this->path}/{$filename}";
-                $stream = fopen($fullPath, 'rb');
-
-                $data = exif_read_data($stream);
-
-                if ($data['FileDateTime']) {
-                    $fileDateTime = Carbon::createFromTimestamp($data['FileDateTime']);
-
-                    return sprintf("%d-%'.02d", $fileDateTime->year, $fileDateTime->month);
-                }
-            }
-        } catch (\Exception $e) {
-            ! $fromFilename = false;
-        }
-
-        if (! $fromFilename) {
-            $fullPath = "{$this->path}/{$filename}";
-            $lastModified = File::lastModified($fullPath);
-            $lastModifiedDate = Carbon::createFromTimestamp($lastModified);
-
-            return sprintf("%d-%'.02d", $lastModifiedDate->year, $lastModifiedDate->month);
-        }
-
-        return $fromFilename;
+        return File::makeDirectory(path: "{$this->path}/{$folder}", recursive: true);
     }
 
     /**
-     * @return bool|string
+     * @return string|bool
      */
-    public function generateSubFolderPathFromFilename($filename)
+    public function generateSubFolderPath(string $filename)
     {
-        if (Str::contains($filename, ['IMG', 'VID'], true) === false) {
-            return false;
+        if ($fromFilename = app(GetDateFromFilename::class)->handle($filename)) {
+            return $this->strategy->pathFromDate($fromFilename);
         }
 
-        $dateFromFilename = $this->explode($filename)[1];
-
-        if (! $this->canParseDateFromString($dateFromFilename)) {
-            return false;
+        if ($fromExif = app(GetDateFromExifData::class)->handle("{$this->path}/{$filename}")) {
+            return $this->strategy->pathFromDate($fromExif);
         }
 
-        // Year Month Day, without delimiters: 20180101
-        $parsedDate = Carbon::createFromFormat('Ymd', $dateFromFilename);
-
-        if ($parsedDate->year !== (int) substr($dateFromFilename, 0, 4)) {
-            return false;
+        if ($fromModifiedDate = app(GetDateFromLastModifiedDate::class)->handle("{$this->path}/{$filename}")) {
+            return $this->strategy->pathFromDate($fromModifiedDate);
         }
 
-        return sprintf("%d-%'.02d", $parsedDate->year, $parsedDate->month);
+        return false;
     }
 
     /**
@@ -151,16 +108,5 @@ class ArchiveJob
             $file->getPathname(),
             "{$this->path}/{$target}/{$file->getFilename()}"
         );
-    }
-
-    public function canParseDateFromString(string $dateFromFilename): bool
-    {
-        // If the length is not exactly 8 characters (yyyymmdd format) return false
-        if (strlen(trim($dateFromFilename)) !== 8) {
-            return false;
-        }
-
-        // Numeric check to exclude non-nummeric matches
-        return is_numeric($dateFromFilename);
     }
 }
