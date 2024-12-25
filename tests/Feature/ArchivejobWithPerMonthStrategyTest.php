@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use App\Jobs\ArchiveJob;
 use App\Strategies\PerMonthStrategy;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class IntegrationTest extends TestCase
+class ArchivejobWithPerMonthStrategyTest extends TestCase
 {
     /**
      * @var string

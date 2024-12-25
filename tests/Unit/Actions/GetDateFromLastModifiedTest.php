@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-class GetDateFromLastModifiedDateTest extends TestCase
+class GetDateFromLastModifiedTest extends TestCase
 {
     /**
      * @var string
