@@ -1,13 +1,14 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature\Jobs;
 
-use App\Jobs\ArchiveJob;
+use App\Exceptions\UnknownStrategyException;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\TestCase;
 
-class IntegrationTest extends TestCase
+class ArchiveCommandTest extends TestCase
 {
     /**
      * @var string
@@ -39,26 +40,36 @@ class IntegrationTest extends TestCase
     }
 
     #[Test]
-    public function it_can_execute_the_archive_job_and_complete_the_archive_process()
+    public function it_can_run_the_archive_command_with_the_default_strategy()
     {
-        // Check the initial state
-        $filesBefore = collect(File::files($this->path));
-        $directoriesBefore = collect(File::directories($this->path));
+        // When
+        $this->artisan("archive {$this->path}")->assertExitCode(0);
 
-        $this->assertEquals(11, $filesBefore->count()); // Check the number of files used for this test
-        $this->assertEquals(0, $directoriesBefore->count()); // Check the number of files used for this test
-
-        // Execute job
-        $archiver = new ArchiveJob($this->path);
-        $archiver->handle();
-
-        // Check the files after running the job. All files must be moved.
+        // Then
         $filesAfter = collect(File::files($this->path));
         $directoriesAfter = collect(File::directories($this->path));
-        $expectedFilename = base_path('tests/archive/2018-09').'/IMG_20180928_082102_1.JPG';
+        $expectedFilename = base_path('tests/archive/2018-09/2018-09-28').'/IMG_20180928_082102_1.JPG';
 
         $this->assertFileExists($expectedFilename);
         $this->assertEquals(0, $filesAfter->count());
         $this->assertEquals(4, $directoriesAfter->count());
+    }
+
+    #[Test]
+    public function it_cannot_run_the_archive_command_when_the_path_is_ommitted()
+    {
+        $this->expectException(RuntimeException::class);
+
+        // When
+        $this->artisan('archive')->assertExitCode(1);
+    }
+
+    #[Test]
+    public function it_cannot_run_the_archive_command_when_a_non_existing_strategy_is_used()
+    {
+        $this->expectException(UnknownStrategyException::class);
+
+        // When
+        $this->artisan("archive {$this->path} --strategy=foobar")->assertExitCode(1);
     }
 }
