@@ -1,10 +1,9 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Jobs;
 
 use App\Jobs\ArchiveJob;
 use App\Strategies\PerMonthAndDayStrategy;
-use App\Strategies\PerMonthStrategy;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

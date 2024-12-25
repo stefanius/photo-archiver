@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\UnknownStrategyException;
 use App\Jobs\ArchiveJob;
+use App\Strategies\Strategy;
 use Illuminate\Console\Command;
 
 class ArchiveCommand extends Command
@@ -12,7 +14,8 @@ class ArchiveCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'archive {path}';
+    protected $signature = 'archive {path}
+                           {--strategy= : The key of the strategy you want to use. }';
 
     /**
      * The console command description.
@@ -26,6 +29,22 @@ class ArchiveCommand extends Command
      */
     public function handle()
     {
-        dispatch(new ArchiveJob($this->argument('path')));
+        $strategy = $this->loadStrategy();
+
+        if (! $strategy instanceof Strategy) {
+            throw new UnknownStrategyException;
+        }
+
+        dispatch(new ArchiveJob($this->argument('path'), $strategy));
+    }
+
+    /**
+     * Load strategy based on the given key.
+     */
+    protected function loadStrategy(): ?\App\Strategies\Strategy
+    {
+        $key = $this->option('strategy') ?: config('archiver.default-strategy');
+
+        return config("archiver.strategies.{$key}");
     }
 }

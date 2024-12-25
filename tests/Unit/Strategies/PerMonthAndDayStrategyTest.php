@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Actions;
 
-use App\Strategies\PerDayStrategy;
 use App\Strategies\PerMonthAndDayStrategy;
 use Carbon\Carbon;
 use PHPUnit\Framework\Attributes\Test;
