@@ -16,7 +16,7 @@ class GetDateFromFilename
     }
 
     /**
-     *  Check if a filename is valid.
+     * Check if a filename is valid.
      *
      * @param string $filename
      *
