@@ -25,7 +25,7 @@ class ArchiveCommand extends Command
     protected $description = 'Archive photo\'s in subfolders';
 
     /**
-     * Execute the console command.
+     * @return void
      */
     public function handle()
     {
