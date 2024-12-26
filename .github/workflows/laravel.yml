@@ -30,6 +30,8 @@ jobs:
         touch database/database.sqlite
     - name: Execute larastan
       run: vendor/bin/phpstan analyse --configuration=phpstan.neon
+    - name: Execute pint
+      run: vendor/bin/pint --test
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite

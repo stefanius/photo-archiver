@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Exceptions\UnknownStrategyException;
 use App\Jobs\ArchiveJob;
 use App\Strategies\Strategy;
 use Illuminate\Console\Command;
+use App\Exceptions\UnknownStrategyException;
 
 class ArchiveCommand extends Command
 {
@@ -31,7 +31,7 @@ class ArchiveCommand extends Command
     {
         $strategy = $this->loadStrategy();
 
-        if (! $strategy instanceof Strategy) {
+        if (!$strategy instanceof Strategy) {
             throw new UnknownStrategyException;
         }
 

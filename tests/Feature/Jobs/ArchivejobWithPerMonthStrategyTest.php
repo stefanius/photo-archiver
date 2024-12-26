@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Jobs;
 
+use Tests\TestCase;
 use App\Jobs\ArchiveJob;
 use App\Strategies\PerMonthStrategy;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
 class ArchivejobWithPerMonthStrategyTest extends TestCase
 {
@@ -56,7 +56,7 @@ class ArchivejobWithPerMonthStrategyTest extends TestCase
         // Check the files after running the job. All files must be moved.
         $filesAfter = collect(File::files($this->path));
         $directoriesAfter = collect(File::directories($this->path));
-        $expectedFilename = base_path('tests/archive/2018-09').'/IMG_20180928_082102_1.JPG';
+        $expectedFilename = base_path('tests/archive/2018-09') . '/IMG_20180928_082102_1.JPG';
 
         $this->assertFileExists($expectedFilename);
         $this->assertEquals(0, $filesAfter->count());

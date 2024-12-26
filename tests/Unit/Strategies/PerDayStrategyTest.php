@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Actions;
 
-use App\Strategies\PerDayStrategy;
 use Carbon\Carbon;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+use App\Strategies\PerDayStrategy;
+use PHPUnit\Framework\Attributes\Test;
 
 class PerDayStrategyTest extends TestCase
 {
