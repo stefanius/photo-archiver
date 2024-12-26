@@ -7,6 +7,7 @@ use App\Actions\GetDateFromFilename;
 use App\Actions\GetDateFromLastModifiedDate;
 use App\Exceptions\NonExistingPathException;
 use App\Strategies\Strategy;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -23,7 +24,7 @@ class ArchiveJob
     protected $strategy;
 
     /**
-     * Undocumented function
+     * Constructor.
      */
     public function __construct(string $path, Strategy $strategy)
     {
@@ -37,7 +38,9 @@ class ArchiveJob
     }
 
     /**
-     * Handle job
+     * Handle job.
+     *
+     * @return void
      */
     public function handle()
     {
@@ -49,10 +52,13 @@ class ArchiveJob
         });
     }
 
+
     /**
-     * @return bool
+     * @param string $folder
+     *
+     * @return boolean
      */
-    public function createTargetIfNotExists($folder)
+    public function createTargetIfNotExists(string $folder): bool
     {
         if (! $folder) {
             return false;
@@ -66,9 +72,11 @@ class ArchiveJob
     }
 
     /**
-     * @return string|bool
+     * @param string $filename
+     *
+     * @return boolean|string
      */
-    public function generateSubFolderPath(string $filename)
+    public function generateSubFolderPath(string $filename): bool|string
     {
         if ($fromFilename = app(GetDateFromFilename::class)->handle($filename)) {
             return $this->strategy->pathFromDate($fromFilename);
@@ -90,15 +98,20 @@ class ArchiveJob
      *
      * @return \Illuminate\Support\Collection
      */
-    public function files()
+    public function files(): Collection
     {
         return collect(File::files($this->path));
     }
 
     /**
-     * @return bool
+     * Undocumented function
+     *
+     * @param \Symfony\Component\Finder\SplFileInfo $file
+     * @param string $target
+     *
+     * @return boolean
      */
-    public function moveFile(SplFileInfo $file, $target)
+    public function moveFile(SplFileInfo $file, string $target): bool
     {
         if (! $target) {
             return false;

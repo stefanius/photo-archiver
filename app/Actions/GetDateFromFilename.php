@@ -16,7 +16,11 @@ class GetDateFromFilename
     }
 
     /**
-     * Check if a filename is valid.
+     *  Check if a filename is valid.
+     *
+     * @param string $filename
+     *
+     * @return boolean
      */
     protected function isFilenameValid(string $filename): bool
     {
@@ -25,6 +29,10 @@ class GetDateFromFilename
 
     /**
      * Explode the filename into an array.
+     *
+     * @param string $filename
+     *
+     * @return array
      */
     public function explode(string $filename): array
     {
@@ -35,6 +43,13 @@ class GetDateFromFilename
         return explode('_', $filename);
     }
 
+    /**
+     * Extract date from filename.
+     *
+     * @param string $filename
+     *
+     * @return boolean|\Carbon\Carbon
+     */
     protected function extractDate(string $filename): bool|Carbon
     {
         // Explode the filename into pieces
@@ -47,6 +62,11 @@ class GetDateFromFilename
         return $this->isDatestringValid($dateElement) ? $this->toCarbonObject($dateElement) : false;
     }
 
+    /**
+     * @param string $dateElement
+     *
+     * @return boolean|\Carbon\Carbon
+     */
     protected function toCarbonObject(string $dateElement): bool|Carbon
     {
         $carbon = Carbon::createFromFormat('Ymd', $dateElement);
@@ -67,6 +87,10 @@ class GetDateFromFilename
 
     /**
      * Check the datestring it matches the yyyymmdd date format.
+     *
+     * @param string $datestring
+     *
+     * @return boolean
      */
     protected function isDatestringValid(string $datestring): bool
     {
