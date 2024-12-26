@@ -9,7 +9,7 @@ class UnknownStrategyException extends Exception
     /**
      * Create a new exception instance.
      *
-     * @param  $message
+     * @param $message
      */
     public function __construct()
     {

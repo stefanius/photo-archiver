@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Actions;
 
-use App\Actions\GetDateFromFilename;
 use Carbon\Carbon;
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+use App\Actions\GetDateFromFilename;
+use PHPUnit\Framework\Attributes\Test;
 
 class GetDateFromFilenameTest extends TestCase
 {

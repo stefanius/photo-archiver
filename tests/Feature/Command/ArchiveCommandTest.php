@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Jobs;
 
-use App\Exceptions\UnknownStrategyException;
+use Tests\TestCase;
+use RuntimeException;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
-use RuntimeException;
-use Tests\TestCase;
+use App\Exceptions\UnknownStrategyException;
 
 class ArchiveCommandTest extends TestCase
 {
@@ -48,7 +48,7 @@ class ArchiveCommandTest extends TestCase
         // Then
         $filesAfter = collect(File::files($this->path));
         $directoriesAfter = collect(File::directories($this->path));
-        $expectedFilename = base_path('tests/archive/2018-09/2018-09-28').'/IMG_20180928_082102_1.JPG';
+        $expectedFilename = base_path('tests/archive/2018-09/2018-09-28') . '/IMG_20180928_082102_1.JPG';
 
         $this->assertFileExists($expectedFilename);
         $this->assertEquals(0, $filesAfter->count());

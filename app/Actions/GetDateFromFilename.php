@@ -20,7 +20,7 @@ class GetDateFromFilename
      *
      * @param string $filename
      *
-     * @return boolean
+     * @return bool
      */
     protected function isFilenameValid(string $filename): bool
     {
@@ -48,7 +48,7 @@ class GetDateFromFilename
      *
      * @param string $filename
      *
-     * @return boolean|\Carbon\Carbon
+     * @return bool|\Carbon\Carbon
      */
     protected function extractDate(string $filename): bool|Carbon
     {
@@ -65,7 +65,7 @@ class GetDateFromFilename
     /**
      * @param string $dateElement
      *
-     * @return boolean|\Carbon\Carbon
+     * @return bool|\Carbon\Carbon
      */
     protected function toCarbonObject(string $dateElement): bool|Carbon
     {
@@ -90,7 +90,7 @@ class GetDateFromFilename
      *
      * @param string $datestring
      *
-     * @return boolean
+     * @return bool
      */
     protected function isDatestringValid(string $datestring): bool
     {

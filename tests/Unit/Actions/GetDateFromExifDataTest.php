@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Actions;
 
-use App\Actions\GetDateFromExifData;
 use Carbon\Carbon;
+use Tests\TestCase;
+use App\Actions\GetDateFromExifData;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 
 class GetDateFromExifDataTest extends TestCase
 {

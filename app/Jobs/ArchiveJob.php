@@ -2,14 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Actions\GetDateFromExifData;
-use App\Actions\GetDateFromFilename;
-use App\Actions\GetDateFromLastModifiedDate;
-use App\Exceptions\NonExistingPathException;
 use App\Strategies\Strategy;
 use Illuminate\Support\Collection;
+use App\Actions\GetDateFromExifData;
+use App\Actions\GetDateFromFilename;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\SplFileInfo;
+use App\Actions\GetDateFromLastModifiedDate;
+use App\Exceptions\NonExistingPathException;
 
 class ArchiveJob
 {
@@ -32,7 +32,7 @@ class ArchiveJob
 
         $this->strategy = $strategy;
 
-        if (! File::exists($this->path)) {
+        if (!File::exists($this->path)) {
             throw new NonExistingPathException($this->path);
         }
     }
@@ -52,15 +52,14 @@ class ArchiveJob
         });
     }
 
-
     /**
      * @param string $folder
      *
-     * @return boolean
+     * @return bool
      */
     public function createTargetIfNotExists(string $folder): bool
     {
-        if (! $folder) {
+        if (!$folder) {
             return false;
         }
 
@@ -74,7 +73,7 @@ class ArchiveJob
     /**
      * @param string $filename
      *
-     * @return boolean|string
+     * @return bool|string
      */
     public function generateSubFolderPath(string $filename): bool|string
     {
@@ -104,16 +103,16 @@ class ArchiveJob
     }
 
     /**
-     * Undocumented function
+     * Undocumented function.
      *
      * @param \Symfony\Component\Finder\SplFileInfo $file
      * @param string $target
      *
-     * @return boolean
+     * @return bool
      */
     public function moveFile(SplFileInfo $file, string $target): bool
     {
-        if (! $target) {
+        if (!$target) {
             return false;
         }
 

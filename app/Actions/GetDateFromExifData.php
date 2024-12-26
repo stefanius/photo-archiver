@@ -2,8 +2,8 @@
 
 namespace App\Actions;
 
-use Carbon\Carbon;
 use Exception;
+use Carbon\Carbon;
 
 class GetDateFromExifData
 {

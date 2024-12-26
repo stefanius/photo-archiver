@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Actions;
 
-use App\Actions\GetDateFromExifData;
-use App\Actions\GetDateFromLastModifiedDate;
 use Carbon\Carbon;
+use Tests\TestCase;
+use App\Actions\GetDateFromExifData;
 use Illuminate\Support\Facades\File;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
+use App\Actions\GetDateFromLastModifiedDate;
 
 class GetDateFromLastModifiedTest extends TestCase
 {
